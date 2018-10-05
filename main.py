@@ -1,13 +1,27 @@
 import csv
 from Docentes import Docentes
+from Veiculos import Veiculos
+
 from datetime import datetime
+from functools import reduce
 
 def main():
-    le_arquivo_docentes()
+    listaDocentes = le_arquivo_docentes()
+    listaVeiculos = lerArquivoVeiculos()
+    lerArquivoQualis(listaVeiculos)
+    print("DOCENTES")
 
+    for i in listaDocentes:
+        print(i)
+    
+    print("VEICULOS")
+
+    for i in listaVeiculos:
+        print(i)
+        
 def le_arquivo_docentes():
     path = 'docentes.csv'
-    file = open(path, newline='')
+    file = open(path, newline='', encoding="utf8")
     reader = csv.reader(file, delimiter = ';')
 
     header = next(reader) # Primeira linha
@@ -22,12 +36,44 @@ def le_arquivo_docentes():
         docente = Docentes(nome, codigo, data_nascimento, data_ingresso, coordenador)
         listaDocentes.append(docente)
 
-
-    print("DOCENTES")
-    print(header)
-    for i in listaDocentes:
-        print(i)
-    
     return listaDocentes
 
+def lerArquivoVeiculos():
+    path = 'veiculos.csv'
+    file = open(path, newline='', encoding="utf8")
+    reader = csv.reader(file, delimiter = ';')
+
+    header = next(reader) # Primeira linha
+    listaVeiculos = []
+    for row in reader:
+        sigla = str(row[0])
+        nome = str(row[1])
+        tipo = str(row[2])
+        fator = float(str(row[3]).replace(',','.'))
+        issn = str(row[4])
+
+        veiculo = Veiculos(sigla, nome, tipo, fator, issn)
+        listaVeiculos.append(veiculo)
+
+    return listaVeiculos
+
+def lerArquivoQualis(listaVeiculos):
+    path = 'qualis.csv'
+    file = open(path, newline='', encoding="utf8")
+    reader = csv.reader(file, delimiter = ';')
+
+    header = next(reader) # Primeira linha
+
+    for row in reader:
+        ano = int(str(row[0]))
+        qualis = str(row[2])
+        listaVeiculo = list(filter(lambda x: x.sigla == str(row[1]), listaVeiculos))
+        veiculo = listaVeiculo[0]
+        print(ano, qualis, veiculo)
+        veiculo.defineQualis(ano, qualis)
+        print(ano, qualis, veiculo)
+
+        
 main()
+
+
