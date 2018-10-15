@@ -67,12 +67,12 @@ def lerArquivoQualis(listaVeiculos):
     for row in reader:
         ano = int(str(row[0]))
         qualis = str(row[2])
-        listaVeiculo = list(filter(lambda x: x.sigla == str(row[1]), listaVeiculos))
-        veiculo = listaVeiculo[0]
-        print(ano, qualis, veiculo)
-        veiculo.defineQualis(ano, qualis)
-        print(ano, qualis, veiculo)
-
+        for i in listaVeiculos:
+            if i.sigla == str(row[1]):
+                i.anoSet(ano)
+                i.qualisSet(qualis)
+                print(ano, qualis, i)
+        
         
 main()
 

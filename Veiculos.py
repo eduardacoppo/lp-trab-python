@@ -1,17 +1,20 @@
 class Veiculos(object):
 
+   
    def __init__(self, sigla, nome, tipo, fator_impacto, issn):
       self.sigla = sigla
       self.nome = nome
       self.tipo = tipo
       self.fator_impacto = fator_impacto
       self.issn = issn
-      self.anos = []
-      self.qualis = []
+      self.ano = 0
+      self.qualis = ''
       
-   def defineQualis(self, ano, qualis):
-      self.anos.append(ano)
-      self.qualis.append(qualis)
+   def anoSet(self, ano):
+      self.ano = ano
+
+   def qualisSet(self, qualis):
+      self.qualis = qualis
 
    def __str__(self):
       retorno = self.sigla
@@ -24,13 +27,8 @@ class Veiculos(object):
       retorno += ', '
       retorno += self.issn
       retorno += ', '
-      for i in self.anos:
-         retorno += str(i);
-         retorno += '-'
+      retorno += str(self.ano);
       retorno += ', '
-
-      for i in self.qualis:
-         retorno += i;
-         retorno += '-'
+      retorno += self.qualis;
       
       return retorno
