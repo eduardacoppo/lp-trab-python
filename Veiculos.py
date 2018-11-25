@@ -27,8 +27,8 @@ class Veiculos(object):
       retorno += ', '
       retorno += self.issn
       retorno += ', '
-      retorno += str(self.ano);
+      retorno += str(self.ano)
       retorno += ', '
-      retorno += self.qualis;
+      retorno += self.qualis
       
       return retorno
