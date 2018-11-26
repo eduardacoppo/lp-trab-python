@@ -1,7 +1,8 @@
 class Periodico(object):
-
-    def __init__(self,ano, nome, veiculo, titulo, autores, numero, pg_inicial, pg_final):
-        self.nome = nome
+#inheritance here
+    def __init__(self,ano, volume, veiculo, titulo, autores, numero, pg_inicial, pg_final):
+        self.ano = ano
+        self.volume = volume
         self.veiculo = veiculo
         self.titulo = titulo
         self.autores = autores

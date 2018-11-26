@@ -1,7 +1,8 @@
 class Conferencia(object):
-
-    def __init__(self,ano, nome, veiculo, titulo, autores, numero, pg_inicial, pg_final):
-        self.nome = nome
+#inheritance here
+    def __init__(self,ano,local, veiculo, titulo, autores, numero, pg_inicial, pg_final):
+        self.ano = ano
+        self.local = local
         self.veiculo = veiculo
         self.titulo = titulo
         self.autores = autores

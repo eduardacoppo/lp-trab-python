@@ -1,7 +1,7 @@
 class Publicacoes(object):
 
     def __init__(self,ano, nome, veiculo, titulo, autores, numero, pg_inicial, pg_final):
-        self.nome = nome
+        self.ano = ano
         self.veiculo = veiculo
         self.titulo = titulo
         self.autores = autores
