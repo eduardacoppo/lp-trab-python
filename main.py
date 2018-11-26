@@ -9,8 +9,11 @@ from functools import reduce
 def main():
     listaDocentes = ler_arquivo_docentes()
     listaVeiculos = ler_arquivo_veiculos()
+    listaPubicacoes = ler_arquivo_publicacoes()
     ler_arquivo_qualis(listaVeiculos)
     regras = ler_arquivo_regras()
+
+
     #print("DOCENTES")
 
     #for i in listaDocentes:
@@ -22,7 +25,12 @@ def main():
     #    print(i)
         
     #print("REGRAS")
+    
     #print(regras)
+
+    write_lista_publicacoes()
+
+
 def ler_arquivo_docentes():
     path = 'docentes.csv'
     file = open(path, newline='', encoding="utf8")
@@ -61,6 +69,27 @@ def ler_arquivo_veiculos():
 
     return listaVeiculos
 
+def ler_arquivo_publicacoes():
+    path = 'publicacoes.csv'
+    file = open(path, newline='', encoding="utf8")
+    reader = csv.reader(file, delimiter = ';')
+
+    header = next(reader) # Primeira linha
+    listaPubicacoes =[]
+
+    for row in reader:
+        ano = row[0]
+        nomeVeiculo = row[1] #procurar o veiculo pelo nome para associalo com a publicacao
+        titulo = row[2]
+        autores = row[3] # autores sao da lista de docentes ?
+        numero = row[4]
+        # verificar se volume e local de conferencia precisa estar em publicacoes (I think so)
+        pagina_inicial = row[6]
+        pagina_final = row[7]
+        
+        pass
+    return listaPubicacoes
+
 def ler_arquivo_qualis(listaVeiculos):
     path = 'qualis.csv'
     file = open(path, newline='', encoding="utf8")
@@ -97,6 +126,10 @@ def ler_arquivo_regras():
         #print( multiplicador,anos_considerar,minimo_pontos)
     regras = Regras(multiplicador,data_inicio,data_fim,anos_considerar,minimo_pontos,ponto_regra)
     return regras
+
+def write_lista_publicacoes():
+    print('this is from the lista de publicacoes function !!!')
+
 
 main()
 
