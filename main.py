@@ -7,10 +7,10 @@ from datetime import datetime
 from functools import reduce
 
 def main():
-    MapDocentes = ler_arquivo_docentes()
-    MapVeiculos = ler_arquivo_veiculos()
-    listaPubicacoes = ler_arquivo_publicacoes()
-    ler_arquivo_qualis(MapVeiculos)
+    mapDocentes = ler_arquivo_docentes()
+    mapVeiculos = ler_arquivo_veiculos()
+    listaPubicacoes = ler_arquivo_publicacoes(mapVeiculos,mapDocentes)
+    ler_arquivo_qualis(mapVeiculos)
     regras = ler_arquivo_regras()
 
 
@@ -37,7 +37,7 @@ def ler_arquivo_docentes():
         listaDocentes.append(docente)
     
     MapDocente = dict(zip(listaCodigos,listaDocentes)) #dicionario cod -> docente
-    print(listaCodigos[0],MapDocente.get(listaCodigos[0]).nome) #test
+    #print(listaCodigos[0],MapDocente.get(listaCodigos[0]).nome) #test
     return MapDocente
 
 def ler_arquivo_veiculos():
@@ -58,29 +58,39 @@ def ler_arquivo_veiculos():
         veiculo = Veiculos(sigla, nome, tipo, fator, issn)
         listaVeiculos.append(veiculo)
     
-    MapVeiculos = dict(zip(listaSiglas,listaVeiculos))
+    MapVeiculos= dict(zip(listaSiglas,listaVeiculos))
+    #print(listaSiglas[0],MapVeiculos[listaSiglas[0]].nome)
     return MapVeiculos
 
 #not finalized
-def ler_arquivo_publicacoes():
+def ler_arquivo_publicacoes(mapVeiculos,mapDocentes):
     path = 'publicacoes.csv'
     file = open(path, newline='', encoding="utf8")
     reader = csv.reader(file, delimiter = ';')
 
     header = next(reader) # Primeira linha
     listaPubicacoes =[]
-
+    listaAutores =[]
     for row in reader:
         ano = row[0]
-        nomeVeiculo = row[1] #procurar o veiculo pelo nome para associalo com a publicacao
+        siglaVeiculo = row[1] #procurar o veiculo pelo nome para associalo com a publicacao
+        veiculo = mapVeiculos.get(siglaVeiculo)
         titulo = row[2]
-        autores = row[3] # autores sao da lista de docentes ?
+        autores = row[3].split(',') # autores sao da lista de docentes ?
+        for autor in autores:
+            listaAutores.append(mapDocentes.get(autor))    
         numero = row[4]
-        # verificar se volume e local de conferencia precisa estar em publicacoes (I think so)
-        pagina_inicial = row[6]
-        pagina_final = row[7]
-
-        pass
+        volume =row[5]
+        local = row[6]
+        pagina_inicial = row[7]
+        pagina_final = row[8]
+        if veiculo.tipo == 'C' or veiculo.tipo == 'c':
+           #print('Conferencia')
+           pass 
+        else:
+            #print('Periodico')
+            pass
+            
     return listaPubicacoes
 
 #not finalized
