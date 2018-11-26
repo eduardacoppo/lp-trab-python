@@ -1,6 +1,7 @@
 import csv
 from Docentes import Docentes
 from Veiculos import Veiculos
+from Regras import Regras
 
 from datetime import datetime
 from functools import reduce
@@ -9,17 +10,19 @@ def main():
     listaDocentes = ler_arquivo_docentes()
     listaVeiculos = ler_arquivo_veiculos()
     ler_arquivo_qualis(listaVeiculos)
-    ler_arquivo_regras()
-    print("DOCENTES")
+    regras = ler_arquivo_regras()
+    #print("DOCENTES")
 
     #for i in listaDocentes:
     #    print(i)
     
-    print("VEICULOS")
+    #print("VEICULOS")
 
     #for i in listaVeiculos:
     #    print(i)
         
+    #print("REGRAS")
+    #print(regras)
 def ler_arquivo_docentes():
     path = 'docentes.csv'
     file = open(path, newline='', encoding="utf8")
@@ -83,16 +86,17 @@ def ler_arquivo_regras():
     for row in reader:
         data_inicio = datetime.strptime(row[0], '%d/%m/%Y')
         data_fim = datetime.strptime(row[1], '%d/%m/%Y')
-        # split with , and then follow the example
-        #“A1,B2,B4,C;10,5,1,0” indica que de A1 a B1 vale 10 pontos, B2 a B3 vale 5 pontos, B4 a
-        #B5 vale 1 ponto e C vale 0 pontos. (row 2 and 3)
+        qualis = row[2].split(',')
+        score = row[3].split(',')
+        ponto_regra  = dict(zip(qualis,score))
+        #print(ponto_regra)
         multiplicador = row[4]
         anos_considerar = row[5]
         minimo_pontos = row[6]
 
-        print( multiplicador,anos_considerar,minimo_pontos)
-    
-    #return regras
+        #print( multiplicador,anos_considerar,minimo_pontos)
+    regras = Regras(multiplicador,data_inicio,data_fim,anos_considerar,minimo_pontos,ponto_regra)
+    return regras
 
 main()
 
