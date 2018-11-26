@@ -7,29 +7,15 @@ from datetime import datetime
 from functools import reduce
 
 def main():
-    listaDocentes = ler_arquivo_docentes()
-    listaVeiculos = ler_arquivo_veiculos()
+    MapDocentes = ler_arquivo_docentes()
+    MapVeiculos = ler_arquivo_veiculos()
     listaPubicacoes = ler_arquivo_publicacoes()
-    ler_arquivo_qualis(listaVeiculos)
+    ler_arquivo_qualis(MapVeiculos)
     regras = ler_arquivo_regras()
 
 
-    #print("DOCENTES")
-
-    #for i in listaDocentes:
-    #    print(i)
-    
-    #print("VEICULOS")
-
-    #for i in listaVeiculos:
-    #    print(i)
-        
-    #print("REGRAS")
-    
-    #print(regras)
-
     write_lista_publicacoes()
-
+    write_estatisticas()
 
 def ler_arquivo_docentes():
     path = 'docentes.csv'
@@ -38,17 +24,21 @@ def ler_arquivo_docentes():
 
     header = next(reader) # Primeira linha
     listaDocentes = []
+    listaCodigos =[]
+
     for row in reader:
         codigo = str(row[0])
         nome = str(row[1])
         data_nascimento = datetime.strptime(row[2], '%d/%m/%Y')
         data_ingresso = datetime.strptime(row[3], '%d/%m/%Y')
         coordenador = str(row[4]) == 'X'
-
+        listaCodigos.append(codigo)
         docente = Docentes(nome, codigo, data_nascimento, data_ingresso, coordenador)
         listaDocentes.append(docente)
-
-    return listaDocentes
+    
+    MapDocente = dict(zip(listaCodigos,listaDocentes)) #dicionario cod -> docente
+    print(listaCodigos[0],MapDocente.get(listaCodigos[0]).nome) #test
+    return MapDocente
 
 def ler_arquivo_veiculos():
     path = 'veiculos.csv'
@@ -57,18 +47,21 @@ def ler_arquivo_veiculos():
 
     header = next(reader) # Primeira linha
     listaVeiculos = []
+    listaSiglas =[]
     for row in reader:
         sigla = str(row[0])
         nome = str(row[1])
         tipo = str(row[2])
         fator = float(str(row[3]).replace(',','.'))
         issn = str(row[4])
-
+        listaSiglas.append(sigla)
         veiculo = Veiculos(sigla, nome, tipo, fator, issn)
         listaVeiculos.append(veiculo)
+    
+    MapVeiculos = dict(zip(listaSiglas,listaVeiculos))
+    return MapVeiculos
 
-    return listaVeiculos
-
+#not finalized
 def ler_arquivo_publicacoes():
     path = 'publicacoes.csv'
     file = open(path, newline='', encoding="utf8")
@@ -86,11 +79,12 @@ def ler_arquivo_publicacoes():
         # verificar se volume e local de conferencia precisa estar em publicacoes (I think so)
         pagina_inicial = row[6]
         pagina_final = row[7]
-        
+
         pass
     return listaPubicacoes
 
-def ler_arquivo_qualis(listaVeiculos):
+#not finalized
+def ler_arquivo_qualis(MapVeiculos):
     path = 'qualis.csv'
     file = open(path, newline='', encoding="utf8")
     reader = csv.reader(file, delimiter = ';')
@@ -99,12 +93,10 @@ def ler_arquivo_qualis(listaVeiculos):
 
     for row in reader:
         ano = int(str(row[0]))
+        sigla = row[1] #find the veiculo associate with it through an object qualis ?
         qualis = str(row[2])
-        for i in listaVeiculos:
-            if i.sigla == str(row[1]):
-                i.anoSet(ano)
-                i.qualisSet(qualis)
-                #print(ano, qualis, i)
+        #criar um objeto qualis
+        
         
 def ler_arquivo_regras(): 
     path ='regras.csv'   
@@ -130,6 +122,8 @@ def ler_arquivo_regras():
 def write_lista_publicacoes():
     print('this is from the lista de publicacoes function !!!')
 
+def write_estatisticas():
+    pass
 
 main()
 
