@@ -2,6 +2,9 @@ import csv
 from Docentes import Docentes
 from Veiculos import Veiculos
 from Regras import Regras
+from Publicacoes import Publicacoes
+from Conferencia import Conferencia
+from Periodico import Periodico
 
 from datetime import datetime
 from functools import reduce
@@ -13,7 +16,7 @@ def main():
     ler_arquivo_qualis(mapVeiculos)
     regras = ler_arquivo_regras()
 
-
+    #print(listaPubicacoes[0].titulo)
     write_lista_publicacoes()
     write_estatisticas()
 
@@ -85,11 +88,13 @@ def ler_arquivo_publicacoes(mapVeiculos,mapDocentes):
         pagina_inicial = row[7]
         pagina_final = row[8]
         if veiculo.tipo == 'C' or veiculo.tipo == 'c':
-           #print('Conferencia')
-           pass 
+            conferencia = Conferencia(local,ano,veiculo,titulo,listaAutores, numero, pagina_inicial, pagina_final)
+            listaPubicacoes.append(conferencia)
+            #print(conferencia.titulo) 
         else:
-            #print('Periodico')
-            pass
+            periodico = Periodico(volume,ano,veiculo,titulo,listaAutores, numero, pagina_inicial, pagina_final)
+            listaPubicacoes.append(periodico)
+            #print(periodico.titulo)
             
     return listaPubicacoes
 

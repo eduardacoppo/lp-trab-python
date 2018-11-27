@@ -1,11 +1,7 @@
-class Periodico(object):
+from Publicacoes import Publicacoes
+
+class Periodico(Publicacoes):
 #inheritance here
-    def __init__(self,ano, volume, veiculo, titulo, autores, numero, pg_inicial, pg_final):
-        self.ano = ano
+    def __init__(self,volume, ano, veiculo, titulo, autores, numero, pg_inicial, pg_final):
+        super(Periodico,self).__init__(ano, veiculo, titulo, autores, numero, pg_inicial, pg_final)
         self.volume = volume
-        self.veiculo = veiculo
-        self.titulo = titulo
-        self.autores = autores
-        self.numero = numero
-        self.pg_inicial = pg_inicial
-        self.pg_final = pg_final
