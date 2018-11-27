@@ -5,6 +5,7 @@ from Regras import Regras
 from Publicacoes import Publicacoes
 from Conferencia import Conferencia
 from Periodico import Periodico
+from Qualificacao import Qualificacao
 
 from datetime import datetime
 from functools import reduce
@@ -13,7 +14,7 @@ def main():
     mapDocentes = ler_arquivo_docentes()
     mapVeiculos = ler_arquivo_veiculos()
     listaPubicacoes = ler_arquivo_publicacoes(mapVeiculos,mapDocentes)
-    ler_arquivo_qualis(mapVeiculos)
+    listaQualificacoes = ler_arquivo_qualis(mapVeiculos)
     regras = ler_arquivo_regras()
 
     #print(listaPubicacoes[0].titulo)
@@ -65,7 +66,6 @@ def ler_arquivo_veiculos():
     #print(listaSiglas[0],MapVeiculos[listaSiglas[0]].nome)
     return MapVeiculos
 
-#not finalized
 def ler_arquivo_publicacoes(mapVeiculos,mapDocentes):
     path = 'publicacoes.csv'
     file = open(path, newline='', encoding="utf8")
@@ -99,20 +99,25 @@ def ler_arquivo_publicacoes(mapVeiculos,mapDocentes):
     return listaPubicacoes
 
 #not finalized
-def ler_arquivo_qualis(MapVeiculos):
+def ler_arquivo_qualis(mapVeiculos):
     path = 'qualis.csv'
     file = open(path, newline='', encoding="utf8")
     reader = csv.reader(file, delimiter = ';')
 
     header = next(reader) # Primeira linha
-
+    
+    listaQualificacoes = []
     for row in reader:
-        ano = int(str(row[0]))
-        sigla = row[1] #find the veiculo associate with it through an object qualis ?
-        qualis = str(row[2])
-        #criar um objeto qualis
-        
-        
+        ano = int(row[0])
+        sigla = row[1] 
+        veiculo = mapVeiculos.get(sigla)
+        qualis = row[2]
+        qualificacao = Qualificacao(ano,veiculo,qualis)
+        #print(qualificacao.ano)
+        listaQualificacoes.append(qualificacao)
+
+    return listaQualificacoes
+      
 def ler_arquivo_regras(): 
     path ='regras.csv'   
     file = open(path, newline='', encoding="utf8")
