@@ -75,30 +75,30 @@ def ler_arquivo_publicacoes(mapVeiculos,mapDocentes):
     listaPubicacoes =[]
     listaAutores =[]
     for row in reader:
-        ano = row[0]
-        siglaVeiculo = row[1] #procurar o veiculo pelo nome para associalo com a publicacao
+        ano = int(row[0])
+        siglaVeiculo = str(row[1]) #procurar o veiculo pelo nome para associalo com a publicacao
         veiculo = mapVeiculos.get(siglaVeiculo)
-        titulo = row[2]
+        titulo = str(row[2])
         autores = row[3].split(',') # autores sao da lista de docentes ?
         for autor in autores:
             listaAutores.append(mapDocentes.get(autor))    
-        numero = row[4]
-        volume =row[5]
-        local = row[6]
-        pagina_inicial = row[7]
-        pagina_final = row[8]
+        numero = int(row[4])
+        volume = str(row[5])
+        local = str(row[6])
+        pagina_inicial = int(row[7])
+        pagina_final = int(row[8])
         if veiculo.tipo == 'C' or veiculo.tipo == 'c':
             conferencia = Conferencia(local,ano,veiculo,titulo,listaAutores, numero, pagina_inicial, pagina_final)
             listaPubicacoes.append(conferencia)
             #print(conferencia.titulo) 
         else:
+            volume = int(volume)
             periodico = Periodico(volume,ano,veiculo,titulo,listaAutores, numero, pagina_inicial, pagina_final)
             listaPubicacoes.append(periodico)
             #print(periodico.titulo)
             
     return listaPubicacoes
 
-#not finalized
 def ler_arquivo_qualis(mapVeiculos):
     path = 'qualis.csv'
     file = open(path, newline='', encoding="utf8")
@@ -109,9 +109,9 @@ def ler_arquivo_qualis(mapVeiculos):
     listaQualificacoes = []
     for row in reader:
         ano = int(row[0])
-        sigla = row[1] 
+        sigla = str(row[1]) 
         veiculo = mapVeiculos.get(sigla)
-        qualis = row[2]
+        qualis = str(row[2])
         qualificacao = Qualificacao(ano,veiculo,qualis)
         #print(qualificacao.ano)
         listaQualificacoes.append(qualificacao)
@@ -127,13 +127,13 @@ def ler_arquivo_regras():
     for row in reader:
         data_inicio = datetime.strptime(row[0], '%d/%m/%Y')
         data_fim = datetime.strptime(row[1], '%d/%m/%Y')
-        qualis = row[2].split(',')
+        qualis = str(row[2].split(','))
         score = row[3].split(',')
+        score = list(map(int,score)) #converter lista de string to list de inteiros
         ponto_regra  = dict(zip(qualis,score))
-        #print(ponto_regra)
-        multiplicador = row[4]
-        anos_considerar = row[5]
-        minimo_pontos = row[6]
+        multiplicador = float(row[4].replace(',','.'))
+        anos_considerar = int(row[5])
+        minimo_pontos = int(row[6])
 
         #print( multiplicador,anos_considerar,minimo_pontos)
     regras = Regras(multiplicador,data_inicio,data_fim,anos_considerar,minimo_pontos,ponto_regra)
