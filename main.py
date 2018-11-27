@@ -1,6 +1,7 @@
 import csv
 from Docentes import Docentes
 from Veiculos import Veiculos
+from Publicacoes import Publicacoes
 from Regras import Regras
 
 from datetime import datetime
@@ -9,24 +10,28 @@ from functools import reduce
 def main():
     listaDocentes = ler_arquivo_docentes()
     listaVeiculos = ler_arquivo_veiculos()
-    listaPubicacoes = ler_arquivo_publicacoes()
+    listaPublicacoes = ler_arquivo_publicacoes(listaVeiculos, listaDocentes)
     ler_arquivo_qualis(listaVeiculos)
     regras = ler_arquivo_regras()
 
 
-    #print("DOCENTES")
+    print("DOCENTES")
 
-    #for i in listaDocentes:
-    #    print(i)
+    for i in listaDocentes:
+        print(i)
     
-    #print("VEICULOS")
+    print("VEICULOS")
 
-    #for i in listaVeiculos:
-    #    print(i)
+    for i in listaVeiculos:
+        print(i)
+
+    print("PUBLICACOES")
+    for i in listaPublicacoes:
+        print(i)
         
-    #print("REGRAS")
+    print("REGRAS")
     
-    #print(regras)
+    print(regras)
 
     write_lista_publicacoes()
 
@@ -69,26 +74,37 @@ def ler_arquivo_veiculos():
 
     return listaVeiculos
 
-def ler_arquivo_publicacoes():
+def ler_arquivo_publicacoes(listaVeiculos, listaDocentes):
     path = 'publicacoes.csv'
     file = open(path, newline='', encoding="utf8")
     reader = csv.reader(file, delimiter = ';')
 
     header = next(reader) # Primeira linha
-    listaPubicacoes =[]
+    listaPublicacoes =[]
 
     for row in reader:
-        ano = row[0]
-        nomeVeiculo = row[1] #procurar o veiculo pelo nome para associalo com a publicacao
-        titulo = row[2]
-        autores = row[3] # autores sao da lista de docentes ?
-        numero = row[4]
-        # verificar se volume e local de conferencia precisa estar em publicacoes (I think so)
-        pagina_inicial = row[6]
-        pagina_final = row[7]
-        
-        pass
-    return listaPubicacoes
+        ano = datetime.strptime(row[0], '%Y')
+        for i in listaVeiculos:
+            if i.sigla == str(row[1]):
+                veiculo = i
+
+        titulo = str(row[2])
+        listaAutores = []
+        codigos = []
+        codigos = str(row[3]).split(",")
+        for i in listaDocentes:
+            if i.codigo in codigos:
+                listaAutores.append(i)
+                
+        numero = int(row[4])
+        volume = str(row[5])
+        local = str(row[6])
+        pagina_inicial = int(row[7])
+        pagina_final = int(row[8])
+
+        publicacao = Publicacoes(ano, veiculo, titulo, listaAutores, numero, volume, local, pagina_inicial, pagina_final)
+        listaPublicacoes.append(publicacao)
+    return listaPublicacoes
 
 def ler_arquivo_qualis(listaVeiculos):
     path = 'qualis.csv'
