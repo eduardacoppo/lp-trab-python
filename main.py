@@ -12,13 +12,13 @@ from functools import reduce
 
 def main():
     mapDocentes = ler_arquivo_docentes()
-    mapVeiculos = ler_arquivo_veiculos()
-    listaPubicacoes = ler_arquivo_publicacoes(mapVeiculos,mapDocentes)
-    listaQualificacoes = ler_arquivo_qualis(mapVeiculos)
+    listaVeiculos = ler_arquivo_veiculos()
+    listaPubicacoes = ler_arquivo_publicacoes(listaVeiculos,mapDocentes)
+    listaQualificacoes = ler_arquivo_qualis(listaVeiculos)
     regras = ler_arquivo_regras()
 
     #print(listaPubicacoes[0].titulo)
-    write_lista_publicacoes()
+    write_lista_publicacoes(listaPubicacoes)
     write_estatisticas()
 
 def ler_arquivo_docentes():
@@ -62,11 +62,11 @@ def ler_arquivo_veiculos():
         veiculo = Veiculos(sigla, nome, tipo, fator, issn)
         listaVeiculos.append(veiculo)
     
-    MapVeiculos= dict(zip(listaSiglas,listaVeiculos))
+    #MapVeiculos= dict(zip(listaSiglas,listaVeiculos))
     #print(listaSiglas[0],MapVeiculos[listaSiglas[0]].nome)
-    return MapVeiculos
+    return listaVeiculos
 
-def ler_arquivo_publicacoes(mapVeiculos,mapDocentes):
+def ler_arquivo_publicacoes(listaVeiculos,mapDocentes):
     path = 'publicacoes.csv'
     file = open(path, newline='', encoding="utf8")
     reader = csv.reader(file, delimiter = ';')
@@ -77,7 +77,10 @@ def ler_arquivo_publicacoes(mapVeiculos,mapDocentes):
     for row in reader:
         ano = int(row[0])
         siglaVeiculo = str(row[1]) #procurar o veiculo pelo nome para associalo com a publicacao
-        veiculo = mapVeiculos.get(siglaVeiculo)
+        for v in listaVeiculos:
+            if v.sigla == siglaVeiculo:
+                veiculo = v
+        #veiculo = mapVeiculos.get(siglaVeiculo)
         titulo = str(row[2])
         autores = row[3].split(',') # autores sao da lista de docentes ?
         for autor in autores:
@@ -91,7 +94,7 @@ def ler_arquivo_publicacoes(mapVeiculos,mapDocentes):
             conferencia = Conferencia(local,ano,veiculo,titulo,listaAutores, numero, pagina_inicial, pagina_final)
             listaPubicacoes.append(conferencia)
             #print(conferencia.titulo) 
-        else:
+        elif veiculo.tipo == 'P' or veiculo.tipo == 'p':
             volume = int(volume)
             periodico = Periodico(volume,ano,veiculo,titulo,listaAutores, numero, pagina_inicial, pagina_final)
             listaPubicacoes.append(periodico)
@@ -99,7 +102,7 @@ def ler_arquivo_publicacoes(mapVeiculos,mapDocentes):
             
     return listaPubicacoes
 
-def ler_arquivo_qualis(mapVeiculos):
+def ler_arquivo_qualis(listaVeiculos):
     path = 'qualis.csv'
     file = open(path, newline='', encoding="utf8")
     reader = csv.reader(file, delimiter = ';')
@@ -110,11 +113,20 @@ def ler_arquivo_qualis(mapVeiculos):
     for row in reader:
         ano = int(row[0])
         sigla = str(row[1]) 
-        veiculo = mapVeiculos.get(sigla)
         qualis = str(row[2])
+        veiculo=''
+        for v in listaVeiculos:
+            if v.sigla == sigla:
+                veiculo = v
+                veiculo.qualisSet(qualis)
+                veiculo.anoSet(ano)
+        
+        #print(veiculo)
         qualificacao = Qualificacao(ano,veiculo,qualis)
         #print(qualificacao.ano)
         listaQualificacoes.append(qualificacao)
+  
+    print(listaQualificacoes[0].veiculo.nome)
 
     return listaQualificacoes
       
@@ -139,8 +151,16 @@ def ler_arquivo_regras():
     regras = Regras(multiplicador,data_inicio,data_fim,anos_considerar,minimo_pontos,ponto_regra)
     return regras
 
-def write_lista_publicacoes():
-    print('this is from the lista de publicacoes function !!!')
+def write_lista_publicacoes(listaPubicacoes):
+    print('Lista publicaces::')
+    listaPubicacoes.sort(key=lambda x: x.titulo) # sort by titulo
+    listaPubicacoes.sort(key=lambda y: y.veiculo.sigla) # sort by veiculo
+    listaPubicacoes.sort(key=lambda z: z.ano, reverse=True) # sort by ano
+    # as publicacoes sem qualis estao ficando no topo :(
+    listaPubicacoes.sort(key=lambda k: k.veiculo.qualis) #sort by qualis
+
+    for i in listaPubicacoes:
+       print(i.veiculo.qualis, i.ano, i.veiculo.sigla, i.titulo)
 
 def write_estatisticas():
     pass

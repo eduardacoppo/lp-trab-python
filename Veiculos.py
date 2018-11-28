@@ -15,7 +15,7 @@ class Veiculos(object):
 
    def qualisSet(self, qualis):
       self.qualis = qualis
-
+   
    def __str__(self):
       retorno = self.sigla
       retorno += ', '
