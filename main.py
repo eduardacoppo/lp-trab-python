@@ -72,13 +72,13 @@ def ler_arquivo_publicacoes(listaVeiculos,listaDocentes):
     listaAutores =[]
     for row in reader:
         ano = int(row[0])
-        siglaVeiculo = str(row[1]).strip() #procurar o veiculo pelo nome para associalo com a publicacao
+        siglaVeiculo = str(row[1]).strip() 
+        # apartir da sigla lida encontrar o veiculo
         for v in listaVeiculos:
             if v.sigla == siglaVeiculo:
                 veiculo = v
         titulo = str(row[2]).strip()
-        autores = row[3].split(',') # autores sao da lista de docentes ?
-    
+        autores = row[3].split(',') 
         for docente in listaDocentes:
             for autor in autores:
                 if autor.strip() == docente.codigo:
@@ -154,7 +154,7 @@ def write_lista_publicacoes(listaPubicacoes):
     listaPubicacoes.sort(key=lambda z: z.ano, reverse=True) # sort by ano
     listaPubicacoes.sort(key=lambda k: k.veiculo.qualis) #sort by qualis
 
-    with open('employee_file.csv','w', newline='',encoding="utf8") as csv_file:
+    with open('2-publicacoes.csv','w', newline='',encoding="utf8") as csv_file:
         fieldnames = ['Ano','Sigla Veículo','Veículo','Qualis','Fator de Impacto','Título','Docentes']
         writer = csv.DictWriter(csv_file, fieldnames=fieldnames,delimiter = ';')
 
