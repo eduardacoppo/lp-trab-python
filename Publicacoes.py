@@ -8,3 +8,7 @@ class Publicacoes(object):
         self.numero = numero
         self.pg_inicial = pg_inicial
         self.pg_final = pg_final
+
+         
+
+
